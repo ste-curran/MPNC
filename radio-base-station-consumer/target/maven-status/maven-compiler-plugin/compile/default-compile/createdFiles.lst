@@ -1,0 +1,5 @@
+com\tus\radiobasestationconsumer\model\RadioBaseStationMessage.class
+com\tus\radiobasestationconsumer\service\RadioBaseStationConsumer.class
+com\tus\radiobasestationconsumer\config\KafkaConsumerConfig.class
+com\tus\radiobasestationconsumer\RadioBaseStationConsumerApplication.class
+com\tus\radiobasestationconsumer\repository\RadioBaseStationMessageRepository.class
