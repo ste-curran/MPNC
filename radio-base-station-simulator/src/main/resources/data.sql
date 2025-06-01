@@ -1,1 +1,0 @@
-MERGE INTO BASE_STATION_CONFIG (id, enabled) KEY(id) VALUES (1, TRUE);
