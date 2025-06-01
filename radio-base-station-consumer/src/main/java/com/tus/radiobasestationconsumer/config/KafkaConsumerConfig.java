@@ -18,11 +18,13 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, RadioBaseStationMessage> consumerFactory() {
+    	// set up conversion of JSON objects into RadioBaseStationMessage objects
         JsonDeserializer<RadioBaseStationMessage> deserializer = new JsonDeserializer<>(RadioBaseStationMessage.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
 
+        // set up Kafka for processing messages from topic using deserialisation
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "radio-consumer-group");
@@ -33,6 +35,7 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
     }
 
+    // Handle message processing. Tell Spring how to create listener containers for @KafkaListener methods
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, RadioBaseStationMessage> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, RadioBaseStationMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();

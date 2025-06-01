@@ -14,17 +14,19 @@ public class RadioBaseStationConsumer {
 
     private final RadioBaseStationMessageRepository repository;
 
+    // inject a JPA repository for saving RadioBaseStationMessage objects to the database
     public RadioBaseStationConsumer(RadioBaseStationMessageRepository repository) {
         this.repository = repository;
     }
 
+    // method will be automatically called whenever a message is received from Kafka topic "radio-base-station-topic"
     @KafkaListener(
         topics = "radio-base-station-topic",
         groupId = "radio-consumer-group",
-        containerFactory = "kafkaListenerContainerFactory"
+        containerFactory = "kafkaListenerContainerFactory" // uses JSON deserialiser
     )
     public void consume(RadioBaseStationMessage message) {
-        logger.info("Consumed message: {}", message);
-        repository.save(message);
+        logger.info("Consumed message: {}", message); // log out notification that message is consumed
+        repository.save(message); // save the message to database using the injected JPA repository .save()
     }
 }
