@@ -1,0 +1,43 @@
+.sidebar {
+    width: 240px;
+    background-color: #1c1e26;
+    color: #ffffff;
+    min-height: 100vh;
+  }
+  
+  .sidebar-header h5 {
+    color: #00d8ff;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .section-title {
+    font-size: 0.85rem;
+    color: #ccc;
+    margin: 10px 0 5px;
+    text-transform: uppercase;
+  }
+  
+  .sidebar-link {
+    display: block;
+    color: #ffffff;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    background-color: #2a2d3a;
+  }
+  
+  .sidebar-link:hover {
+    background-color: #00d8ff;
+    color: #000;
+  }
+  
+  .sidebar-link.active {
+    background-color: #00c4ff;
+    color: #000;
+    font-weight: 600;
+  }
+  
