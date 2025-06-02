@@ -1,0 +1,34 @@
+server:
+  port: 9092  # Or whatever port you want the consumer service on
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mobile_network_db  # Change to your DB
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # Or 'validate' or 'create' depending on your dev stage
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: consumer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    listener:
+      missing-topics-fatal: false
+      ack-mode: batch  # Optional, depending on control
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.hibernate.SQL: DEBUG
