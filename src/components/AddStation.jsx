@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const AddStation = () => {
   const [form, setForm] = useState({
     nodeId: '',
     networkId: '',
-    name: '',
-    streaming: false
+    networkName: '',
+    enabled: false
   });
 
   const handleChange = (e) => {
@@ -16,10 +17,16 @@ const AddStation = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Station added:\n${JSON.stringify(form, null, 2)}`);
-    setForm({ nodeId: '', networkId: '', name: '', streaming: false });
+    try {
+      await axios.post('http://localhost:9092/api/base-stations', form);
+      alert('Radio station added successfully!');
+      setForm({ nodeId: '', networkId: '', networkName: '', enabled: false });
+    } catch (error) {
+      alert('Error adding radio station. Please try again.');
+      console.error(error);
+    }
   };
 
   return (
@@ -28,52 +35,27 @@ const AddStation = () => {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Node ID *</label>
-          <input
-            type="text"
-            className="form-control"
-            name="nodeId"
-            value={form.nodeId}
-            onChange={handleChange}
-            required
-          />
+          <input type="number" className="form-control" name="nodeId" value={form.nodeId} onChange={handleChange} required />
         </div>
         <div className="mb-3">
           <label className="form-label">Network ID *</label>
-          <input
-            type="text"
-            className="form-control"
-            name="networkId"
-            value={form.networkId}
-            onChange={handleChange}
-            required
-          />
+          <input type="number" className="form-control" name="networkId" value={form.networkId} onChange={handleChange} required />
         </div>
         <div className="mb-3">
           <label className="form-label">Network Name *</label>
-          <input
-            type="text"
-            className="form-control"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" className="form-control" name="networkName" value={form.networkName} onChange={handleChange} required />
         </div>
-        <div className="form-check form-switch mb-4">
+        <div className="form-check form-switch mb-3">
           <input
             className="form-check-input"
             type="checkbox"
-            name="streaming"
-            checked={form.streaming}
+            name="enabled"
+            checked={form.enabled}
             onChange={handleChange}
           />
           <label className="form-check-label">Enable Data Streaming</label>
         </div>
-        <div className="text-end">
-          <button type="submit" className="btn btn-primary px-4">
-            Add Station
-          </button>
-        </div>
+        <button type="submit" className="btn btn-primary w-100">Add Station</button>
       </form>
     </div>
   );

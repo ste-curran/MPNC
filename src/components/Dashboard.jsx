@@ -1,13 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { FaServer, FaDatabase, FaClock, FaBroadcastTower } from 'react-icons/fa';
 
 const Dashboard = () => {
-  const stats = {
+  const [stats, setStats] = useState({
     kafka: 'Connected',
     database: 'Connected',
-    calls: 1847,
-    activeStations: 3
+    calls: 0,
+    activeStations: 0
+  });
+
+  const [stations, setStations] = useState([]);
+
+  const fetchDashboardData = async () => {
+    try {
+      const callsRes = await axios.get('/api/data/total-calls');
+      const stationsRes = await axios.get('/api/base-stations');
+      
+      setStats(prev => ({
+        ...prev,
+        calls: callsRes.data.totalCalls,
+        activeStations: stationsRes.data.filter(s => s.enabled).length
+      }));
+      setStations(stationsRes.data);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    }
   };
+
+  const toggleStatus = async (station) => {
+    try {
+      await axios.put(`/api/base-stations/${station.nodeId}/status`, {
+        enabled: !station.enabled
+      });
+      fetchDashboardData();
+    } catch (error) {
+      console.error('Error toggling status:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+    const interval = setInterval(fetchDashboardData, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="dashboard">
@@ -48,29 +84,20 @@ const Dashboard = () => {
       <div className="card p-4 shadow-sm">
         <h5 className="mb-3">Base Stations Status</h5>
         <div className="d-flex flex-column gap-3">
-          <div className="d-flex justify-content-between align-items-center border rounded p-3">
-            <div>
-              <strong>Central Hub</strong><br />
-              <small>Node: 1001 | Network: 5001</small>
+          {stations.map(station => (
+            <div key={station.nodeId} className="d-flex justify-content-between align-items-center border rounded p-3">
+              <div>
+                <strong>{station.networkName}</strong><br />
+                <small>Node: {station.nodeId} | Network: {station.networkId}</small>
+              </div>
+              <button
+                className={`btn btn-sm px-3 ${station.enabled ? 'btn-success' : 'btn-secondary'}`}
+                onClick={() => toggleStatus(station)}
+              >
+                {station.enabled ? 'Streaming' : 'Disabled'}
+              </button>
             </div>
-            <span className="badge bg-success px-3 py-2">Streaming</span>
-          </div>
-
-          <div className="d-flex justify-content-between align-items-center border rounded p-3">
-            <div>
-              <strong>North Tower</strong><br />
-              <small>Node: 1002 | Network: 5001</small>
-            </div>
-            <span className="badge bg-success px-3 py-2">Streaming</span>
-          </div>
-
-          <div className="d-flex justify-content-between align-items-center border rounded p-3">
-            <div>
-              <strong>South Gateway</strong><br />
-              <small>Node: 1003 | Network: 5002</small>
-            </div>
-            <span className="badge bg-secondary px-3 py-2">Disabled</span>
-          </div>
+          ))}
         </div>
       </div>
     </div>
