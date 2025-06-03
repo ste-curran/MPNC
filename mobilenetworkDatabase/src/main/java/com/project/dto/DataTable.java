@@ -47,7 +47,7 @@ public class DataTable {
         this.networkName = networkName;
     }
 
-    public LocalDateTime getMobilleCallPeriod() {
+    public LocalDateTime getMobileCallPeriod() {
         return mobileCallPeriod;
     }
 
