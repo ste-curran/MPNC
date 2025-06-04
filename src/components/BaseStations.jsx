@@ -9,7 +9,7 @@ const BaseStations = () => {
 
   const fetchStations = async () => {
     try {
-      const res = await axios.get('http://localhost:9092/api/base-stations');
+      const res = await axios.get('http://localhost:8081/api/base-stations');
       setStations(res.data);
     } catch (err) {
       console.error('Error fetching stations', err);

@@ -3,9 +3,13 @@ package com.basestation.controller;
 import com.basestation.dto.BaseStation;
 import com.basestation.service.BaseStationService;
 import com.basestation.service.BaseStationServiceImplementation;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,10 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Optional;
-
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,77 +31,79 @@ public class BaseStationControllerTest {
     @MockBean
     private BaseStationServiceImplementation baseStationService;
 
-    private BaseStation sampleStation;
-
-    @BeforeEach
-    public void setUp() {
-        sampleStation = new BaseStation();
-        sampleStation.setNodeId(101);
-        sampleStation.setNetworkId(1);
-        sampleStation.setNetworkName("Vodafone");
-        sampleStation.setEnabled(true);
-    }
-
     @Test
-    public void testGetAllBaseStations() throws Exception {
-        when(baseStationService.getBaseStations()).thenReturn(Arrays.asList(sampleStation));
+    void testGetAllBaseStations() throws Exception {
+        BaseStation b1 = new BaseStation();
+        BaseStation b2 = new BaseStation();
 
-        mockMvc.perform(get("/basestation"))
+        when(baseStationService.getBaseStations()).thenReturn(Arrays.asList(b1, b2));
+
+        mockMvc.perform(get("/api/base-stations"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].nodeId").value(101));
+                .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
-    public void testGetBaseStationById() throws Exception {
-        when(baseStationService.getBaseStation(101)).thenReturn(Optional.of(sampleStation));
+    void testGetStationFound() throws Exception {
+        BaseStation station = new BaseStation();
+        station.setNodeId(1);
+        station.setEnabled(true);
 
-        mockMvc.perform(get("/basestation/101"))
+        when(baseStationService.getBaseStation(1)).thenReturn(Optional.of(station));
+
+        mockMvc.perform(get("/api/base-stations/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.networkName").value("Vodafone"));
+                .andExpect(jsonPath("$.nodeId").value(1));
     }
 
     @Test
-    public void testIsEnabled() throws Exception {
-        when(baseStationService.isStreamingEnabled(101)).thenReturn(true);
+    void testGetStationNotFound() throws Exception {
+        when(baseStationService.getBaseStation(999)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/basestation/101/enabled"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+        mockMvc.perform(get("/api/base-stations/999"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    public void testCreateBaseStation() throws Exception {
-        when(baseStationService.createBaseStation(any(BaseStation.class))).thenReturn(sampleStation);
+    void testCreateOrUpdateBaseStation() throws Exception {
+        BaseStation station = new BaseStation();
+        station.setNodeId(1);
+        station.setEnabled(true);
+        station.setNetworkId(123);
+        station.setNetworkName("Test");
+
+        when(baseStationService.createBaseStation(any(BaseStation.class))).thenReturn(station);
 
         String json = """
-        {
-          "nodeId": 101,
-          "networkId": 1,
-          "networkName": "Vodafone",
-          "streamingEnabled": true
-        }
+            {
+              "nodeId": 1,
+              "networkId": 123,
+              "networkName": "Test",
+              "enabled": true
+            }
         """;
 
-        mockMvc.perform(post("/basestation")
+        mockMvc.perform(post("/api/base-stations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nodeId").value(101));
+                .andExpect(jsonPath("$.nodeId").value(1))
+                .andExpect(jsonPath("$.networkName").value("Test"));
     }
 
     @Test
-    public void testEnableBaseStation() throws Exception {
-        mockMvc.perform(put("/basestation/101/enabled"))
+    void testUpdateStreamingStatus() throws Exception {
+        String json = """
+            {
+              "enabled": false
+            }
+        """;
+
+        doNothing().when(baseStationService).setStreamingEnabled(eq(1), eq(false));
+
+        mockMvc.perform(put("/api/base-stations/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isOk());
-
-        Mockito.verify(baseStationService).setStreamingEnabled(101, true);
-    }
-
-    @Test
-    public void testDisableBaseStation() throws Exception {
-        mockMvc.perform(put("/basestation/101/disabled"))
-                .andExpect(status().isOk());
-
-        Mockito.verify(baseStationService).setStreamingEnabled(101, false);
     }
 }

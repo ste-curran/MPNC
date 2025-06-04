@@ -1,5 +1,5 @@
 server:
-  port: 9092  # Or whatever port you want the consumer service on
+  port: 9094  # Or whatever port you want the consumer service on
 
 spring:
   datasource:

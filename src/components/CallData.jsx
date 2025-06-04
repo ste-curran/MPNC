@@ -13,7 +13,7 @@ const CallData = () => {
 
   const fetchCallData = async () => {
     try {
-      const res = await axios.get('http://localhost:9092/api/call-data');
+      const res = await axios.get('http://localhost:9094/api/call-data');
       setCallData(res.data);
     } catch (error) {
       console.error('Error fetching call data:', error);

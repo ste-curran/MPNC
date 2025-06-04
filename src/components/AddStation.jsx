@@ -20,7 +20,7 @@ const AddStation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:9092/api/base-stations', form);
+      await axios.post('http://localhost:8081/api/base-stations', form);
       alert('Radio station added successfully!');
       setForm({ nodeId: '', networkId: '', networkName: '', enabled: false });
     } catch (error) {

@@ -9,41 +9,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/basestation")
+@RequestMapping("/api/base-stations")  // ✅ Matches frontend
+@CrossOrigin(origins = "*")            // ✅ Allow frontend access
 public class BaseStationController {
-    private BaseStationService baseStationService;
+
+    private final BaseStationService baseStationService;
+
     public BaseStationController(BaseStationServiceImplementation baseStationService) {
         this.baseStationService = baseStationService;
     }
+
     @GetMapping
     public List<BaseStation> getAllBaseStations() {
         return baseStationService.getBaseStations();
     }
+
     @GetMapping("/{nodeId}")
-    public ResponseEntity<BaseStation> enableStation(@PathVariable int nodeId){
-        return baseStationService.getBaseStation(nodeId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BaseStation> getStation(@PathVariable int nodeId) {
+        return baseStationService.getBaseStation(nodeId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-    @GetMapping("/{nodeId}/enabled")
-    public boolean isEnabled(@PathVariable int nodeId){
-        return baseStationService.isStreamingEnabled(nodeId);
-    }
-    @PutMapping("/{nodeId}/enabled")
-    public ResponseEntity<Void> enableBaseStation(@PathVariable int nodeId){
-        baseStationService.setStreamingEnabled(nodeId, true);
-        return ResponseEntity.ok().build();
-    }
-    @PutMapping("/{nodeId}/disabled")
-    public ResponseEntity<Void> disableBaseStation(@PathVariable int nodeId){
-        baseStationService.setStreamingEnabled(nodeId, false);
-        return ResponseEntity.ok().build();
-    }
-    @GetMapping("/enabled")
-    public List<BaseStation> getEnabledBaseStations() {
-        return baseStationService.getBaseStations();
-    }
+
     @PostMapping
-    public ResponseEntity<BaseStation> createOrUpdateBaseStation(@RequestBody BaseStation baseStation){
+    public ResponseEntity<BaseStation> createOrUpdateBaseStation(@RequestBody BaseStation baseStation) {
         return ResponseEntity.ok(baseStationService.createBaseStation(baseStation));
     }
 
+    @PutMapping("/{nodeId}")
+    public ResponseEntity<Void> updateStreamingStatus(@PathVariable int nodeId, @RequestBody BaseStation input) {
+        baseStationService.setStreamingEnabled(nodeId, input.isEnabled());
+        return ResponseEntity.ok().build();
+    }
 }
+
