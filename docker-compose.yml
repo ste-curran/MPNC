@@ -42,6 +42,8 @@ services:
 networks:
   tap_network:
     driver: bridge
+    name: tap_network
+    external: true
 
 volumes:
   kafka-data:
