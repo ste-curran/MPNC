@@ -28,7 +28,7 @@ public class BaseStationController {
             String mysqlDb = "mydb";
             String mysqlUser = "root";
             String mysqlPassword = "root";
-            String baseStationImage = "nginx";
+            String baseStationImage = "prod";
 
             // Find an available port
             int port = findAvailablePort();
