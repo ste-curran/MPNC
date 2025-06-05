@@ -1,5 +1,6 @@
 package com.example.containermanager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.util.HashSet;
@@ -7,6 +8,9 @@ import java.util.Set;
 
 @RestController
 public class BaseStationController {
+
+    @Autowired
+    private BaseStationRepository baseStationRepository; // Inject repository
 
     // Set to keep track of used ports
     private Set<Integer> usedPorts = new HashSet<>();
@@ -32,6 +36,16 @@ public class BaseStationController {
 
             // Find an available port
             int port = findAvailablePort();
+
+            // Save the base station details in the database
+            BaseStation baseStation = new BaseStation();
+            baseStation.setNodeId(nodeId);
+            baseStation.setNetworkId(networkId);
+            baseStation.setNetworkName(networkName);
+            baseStation.setStreamingEnabled(streamingEnabled);
+            baseStation.setPort(port);
+
+            baseStationRepository.save(baseStation);  // Save the base station in DB
 
             // Prepare the Docker command with the dynamic port
             String command = String.format(
@@ -74,7 +88,7 @@ public class BaseStationController {
             // Wait for the process to complete and check the exit code
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                return "Base Station " + nodeId + " created and started successfully on port " + port + "!";
+                return "Base Station " + nodeId + " created and started successfully on port " + port + " and saved to DB!";
             } else {
                 return "Error: Docker container failed to start.";
             }
