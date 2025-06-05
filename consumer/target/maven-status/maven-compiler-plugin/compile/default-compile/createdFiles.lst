@@ -1,2 +1,4 @@
+com\example\consumer\MessageEntity.class
 com\example\consumer\KafkaService.class
 com\example\consumer\KafkaConsumerApp.class
+com\example\consumer\MessageRepository.class
