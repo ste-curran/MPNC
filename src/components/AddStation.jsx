@@ -6,25 +6,27 @@ const AddStation = () => {
     nodeId: '',
     networkId: '',
     networkName: '',
-    enabled: false, // First checkbox (enabled)
-    streamingEnabled: false // Second checkbox (streamingEnabled)
+    enabled: true, // Always true, as the station will always be enabled
+    streamingEnabled: false // Initially, streaming is disabled
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, type, checked, value } = e.target;
+
+    // Update only the `streamingEnabled` property on checkbox toggle
     setForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value // Handle checkbox separately
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Send the form data (station will always be enabled, streamingEnabled will toggle)
       await axios.post('http://localhost:8081/create-base-station', form);
       alert('Radio station added successfully!');
-      // Reset form and both the checkboxes
-      setForm({ nodeId: '', networkId: '', networkName: '', enabled: false, streamingEnabled: false });
+      setForm({ nodeId: '', networkId: '', networkName: '', enabled: true, streamingEnabled: false });
     } catch (error) {
       alert('Error adding radio station. Please try again.');
       console.error(error);
@@ -72,17 +74,7 @@ const AddStation = () => {
           <input
             className="form-check-input"
             type="checkbox"
-            name="enabled" // First checkbox - enabled
-            checked={form.enabled}
-            onChange={handleChange}
-          />
-          <label className="form-check-label">Enable Station</label>
-        </div>
-        <div className="form-check form-switch mb-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            name="streamingEnabled" // Second checkbox - streamingEnabled
+            name="streamingEnabled" // Only toggling this property
             checked={form.streamingEnabled}
             onChange={handleChange}
           />
