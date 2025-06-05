@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class BaseStationController {
 
