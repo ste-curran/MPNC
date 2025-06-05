@@ -10,14 +10,22 @@ public class MessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
+
+    private Integer nodeId;
+    private Integer networkId;
+    private String networkName;
+    private Integer numCalls;
 
     // Default constructor for JPA
     public MessageEntity() {
     }
 
-    public MessageEntity(String content) {
-        this.content = content;
+    // Constructor to initialize the fields
+    public MessageEntity(Integer nodeId, Integer networkId, String networkName, Integer numCalls) {
+        this.nodeId = nodeId;
+        this.networkId = networkId;
+        this.networkName = networkName;
+        this.numCalls = numCalls;
     }
 
     // Getters and Setters
@@ -29,11 +37,36 @@ public class MessageEntity {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public Integer getNodeId() {
+        return nodeId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setNodeId(Integer nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public Integer getNetworkId() {
+        return networkId;
+    }
+
+    public void setNetworkId(Integer networkId) {
+        this.networkId = networkId;
+    }
+
+    public String getNetworkName() {
+        return networkName;
+    }
+
+    public void setNetworkName(String networkName) {
+        this.networkName = networkName;
+    }
+
+    public Integer getNumCalls() {
+        return numCalls;
+    }
+
+    public void setNumCalls(Integer numCalls) {
+        this.numCalls = numCalls;
     }
 }
+

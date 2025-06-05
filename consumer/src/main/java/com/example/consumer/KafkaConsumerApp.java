@@ -13,17 +13,3 @@ public class KafkaConsumerApp {
     }
 }
 
-@Service
-class KafkaService {
-    @Autowired
-    private MessageRepository messageRepository;
-
-    @KafkaListener(topics = "test", groupId = "my-group")
-    public void listen(String message) {
-        System.out.println("Received: " + message);
-        // Save the message to MySQL
-        MessageEntity entity = new MessageEntity(message);
-        messageRepository.save(entity);
-        System.out.println("Saved to MySQL: " + message);
-    }
-}
