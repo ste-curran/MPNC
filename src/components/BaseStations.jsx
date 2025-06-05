@@ -20,17 +20,6 @@ const BaseStations = () => {
     fetchStations();
   }, []);
 
-  const toggleStation = async (nodeId, currentStatus) => {
-    try {
-      await axios.put(`http://localhost:8081/api/base-stations/${nodeId}`, {
-        enabled: !currentStatus,
-      });
-      fetchStations();
-    } catch (err) {
-      console.error('Error toggling station', err);
-    }
-  };
-
   const filtered = stations.filter(s => s.networkName.toLowerCase().includes(search.toLowerCase()));
   const totalPages = Math.ceil(filtered.length / pageSize);
   const currentPageData = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -68,14 +57,15 @@ const BaseStations = () => {
               <td>{station.networkName}</td>
               <td>
                 <div className="form-check form-switch">
+                  {/* The checkbox is now read-only and reflects the current status */}
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    checked={station.enabled}
-                    onChange={() => toggleStation(station.nodeId, station.enabled)}
+                    checked={station.streamingEnabled === "true"} // Based on the streamingEnabled value from DB
+                    readOnly // This makes the checkbox locked (non-toggleable)
                   />
                   <label className="form-check-label">
-                    {station.enabled ? 'Enabled' : 'Disabled'}
+                    {station.streamingEnabled === "true" ? 'Enabled' : 'Disabled'}
                   </label>
                 </div>
               </td>
