@@ -22,7 +22,7 @@ const BaseStations = () => {
 
   const toggleStation = async (nodeId, currentStatus) => {
     try {
-      await axios.put(`http://localhost:9092/api/base-stations/${nodeId}`, {
+      await axios.put(`http://localhost:8081/api/base-stations/${nodeId}`, {
         enabled: !currentStatus,
       });
       fetchStations();
