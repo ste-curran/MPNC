@@ -1,5 +1,6 @@
 package com.basestation.dto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -11,7 +12,8 @@ public class BaseStation {
     private int nodeId;
     private int networkId;
     private String networkName;
-    private boolean isEnabled;
+    @Column(nullable = false, columnDefinition = "BOOLEAN")
+    private boolean enabled;
 
     public int getNetworkId() {
         return networkId;
@@ -38,10 +40,10 @@ public class BaseStation {
     }
 
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 }

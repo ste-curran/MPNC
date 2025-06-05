@@ -21,4 +21,8 @@ public class DataTableController {
     public List<DataTable> getAllCallData() {
         return dataTableRepo.findAll();
     }
+    @GetMapping("/total-calls")
+    public long getTotalCalls() {
+        return dataTableRepo.count();
+    }
 }

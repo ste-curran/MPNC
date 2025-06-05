@@ -14,19 +14,24 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const callsRes = await axios.get('/api/data/total-calls');
-      const stationsRes = await axios.get('/api/base-stations');
-      
+      const callsRes = await axios.get('http://localhost:9094/api/call-data/total-calls');
+      const countRes = await axios.get('http://localhost:8081/api/base-stations/enabled/count');
+      const stationsRes = await axios.get('http://localhost:8081/api/base-stations');
+
+      console.log("📊 countRes.data =", countRes.data);  // <-- Add this line
+
       setStats(prev => ({
         ...prev,
-        calls: callsRes.data.totalCalls,
-        activeStations: stationsRes.data.filter(s => s.enabled).length
+        calls: callsRes.data,
+        activeStations: countRes.data
       }));
+
       setStations(stationsRes.data);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
   };
+
 
   const toggleStatus = async (station) => {
     try {

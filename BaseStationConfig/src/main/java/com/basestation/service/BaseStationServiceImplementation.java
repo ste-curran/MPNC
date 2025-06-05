@@ -38,6 +38,11 @@ public class BaseStationServiceImplementation implements BaseStationService {
     }
     @Override
     public List<BaseStation> getEnabledBaseStations(int nodeId) {
-        return baseStationRepo.findByIsEnabledTrue();
+        return baseStationRepo.findByEnabledTrue();
     }
+    @Override
+    public long countEnabledStations() {
+        return baseStationRepo.countEnabledStationsUsingQuery();  // ✅ correct
+    }
+
 }

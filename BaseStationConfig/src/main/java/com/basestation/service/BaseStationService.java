@@ -12,4 +12,5 @@ public interface BaseStationService {
     BaseStation createBaseStation(BaseStation baseStation);
     void setStreamingEnabled(int nodeId, boolean enabled);
     List<BaseStation> getEnabledBaseStations(int nodeId);
+    long countEnabledStations();
 }

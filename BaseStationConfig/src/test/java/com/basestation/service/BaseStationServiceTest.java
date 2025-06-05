@@ -94,7 +94,7 @@ public class BaseStationServiceTest {
 
     @Test
     void testGetEnabledStations() {
-        when(baseStationRepo.findByIsEnabledTrue()).thenReturn(Arrays.asList(sample));
+        when(baseStationRepo.findByEnabledTrue()).thenReturn(Arrays.asList(sample));
 
         List<BaseStation> result = service.getEnabledBaseStations(0); // nodeId isn't used in method
 

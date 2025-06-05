@@ -1,6 +1,7 @@
 package com.basestation.controller;
 
 import com.basestation.dto.BaseStation;
+import com.basestation.repo.BaseStationRepo;
 import com.basestation.service.BaseStationService;
 import com.basestation.service.BaseStationServiceImplementation;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +42,13 @@ public class BaseStationController {
         baseStationService.setStreamingEnabled(nodeId, input.isEnabled());
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/enabled/count")
+    public long getEnabledStationCount() {
+        long count = baseStationService.countEnabledStations();
+        System.out.println("✅ Enabled Station Count returned to frontend: " + count);
+        return count;
+    }
+
+
 }
 
