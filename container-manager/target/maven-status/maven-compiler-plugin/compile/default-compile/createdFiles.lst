@@ -1,0 +1,6 @@
+com\example\containermanager\BaseStationController$ToggleRequest.class
+com\example\containermanager\BaseStationRequest.class
+com\example\containermanager\ContainerManagerApplication.class
+com\example\containermanager\BaseStation.class
+com\example\containermanager\BaseStationController.class
+com\example\containermanager\BaseStationRepository.class
